@@ -1,0 +1,21 @@
+# Environments and Python artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Byte-compiled / caches
+.mypy_cache/
+.pytest_cache/
+
+# IDE / editor
+.idea/
+.vscode/
+
+# Data
+data/
+
+# Docker volumes (if bind-mounted)
+chroma_data/
+pg_data/
