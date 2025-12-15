@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-kb-assistant"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "pydantic>=2.6",
+  "pydantic-settings>=2.2",
+  "sqlalchemy>=2.0",
+  "psycopg[binary]>=3.1",
+
+  "celery>=5.3",
+  "redis>=5.0",
+
+  "langchain>=0.2",
+  "langchain-openai>=0.1",
+  "langchain-community>=0.2",
+
+  "chromadb>=0.5",
+]
+
+[tool.setuptools]
+packages = ["app"]
