@@ -193,7 +193,7 @@ See the setup instructions for:
 - API usage
 
 Quick start:
-- Copy `.env.example` to `.env` and set `OPENAI_API_KEY` (and any other secrets).
+- Copy `.env.example` to `.env` and set `OPENAI_API_KEY` (and any other secrets). If you lack an API key, set `MOCK_MODE=true` to bypass external calls.
 - Run `docker compose up --build api worker redis postgres` in one terminal.
 - In another terminal, ingest docs with `docker compose run --rm api python scripts/ingest.py`.
 - Run tests: `docker compose run --rm api pytest -q` (once tests are added); lint with `docker compose run --rm api ruff check .`.

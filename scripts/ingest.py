@@ -26,6 +26,10 @@ def load_kb_docs() -> list[Document]:
 
 
 def main() -> None:
+    if settings.mock_mode:
+        print("Mock mode enabled; skipping Chroma ingest.")
+        return
+
     raw_docs = load_kb_docs()
     if not raw_docs:
         print(f"No docs found in {settings.kb_dir}")

@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     app_env: str = "dev"
     log_level: str = "INFO"
+    mock_mode: bool = False
 
     openai_api_key: str
     openai_model: str = "gpt-4o-mini"

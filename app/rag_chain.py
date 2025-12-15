@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Iterable
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -12,6 +13,8 @@ from app.schemas import AskResult
 
 
 def get_vectorstore() -> Chroma:
+    if settings.mock_mode:
+        raise RuntimeError("Vector store is not used in mock mode")
     embeddings = OpenAIEmbeddings(
         model=settings.openai_embeddings_model,
         api_key=settings.openai_api_key,
@@ -24,11 +27,16 @@ def get_vectorstore() -> Chroma:
 
 
 def retrieve(question: str, k: int = 4) -> list[Document]:
+    if settings.mock_mode:
+        return retrieve_mock(k=k)
     vs = get_vectorstore()
     return vs.similarity_search(question, k=k)
 
 
 def build_chain():
+    if settings.mock_mode:
+        return MockChain()
+
     llm = ChatOpenAI(
         model=settings.openai_model,
         api_key=settings.openai_api_key,
@@ -57,3 +65,32 @@ def format_context(docs: Iterable[Document]) -> str:
         chunk_id = d.metadata.get("chunk_id", str(i))
         parts.append(f"[{i}] source={source} chunk_id={chunk_id}\n{d.page_content}")
     return "\n\n---\n\n".join(parts)
+
+
+def retrieve_mock(k: int = 4) -> list[Document]:
+    docs: list[Document] = []
+    kb_dir = Path(settings.kb_dir)
+    for path in kb_dir.rglob("*"):
+        if not path.is_file():
+            continue
+        if path.suffix.lower() not in {".md", ".txt"}:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        docs.append(
+            Document(
+                page_content=text,
+                metadata={"source": str(path), "chunk_id": f"{path.name}:0"},
+            )
+        )
+    return docs[:k]
+
+
+class MockChain:
+    """Minimal stand-in for LLM chain when mock_mode is enabled."""
+
+    def invoke(self, inputs: dict) -> AskResult:
+        return AskResult(
+            answer=f"[MOCK ANSWER] {inputs.get('question', '')}".strip(),
+            citations=[],
+            confidence=0.0,
+        )
