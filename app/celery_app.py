@@ -5,6 +5,7 @@ celery = Celery(
     "rag_kb_assistant",
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
+    include=["app.tasks"],
 )
 
 celery.conf.update(
