@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Iterable
 
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
@@ -20,7 +20,7 @@ def get_vectorstore() -> Chroma:
         api_key=settings.openai_api_key,
     )
     return Chroma(
-        collection_name="kb",
+        collection_name="kb_docs",
         embedding_function=embeddings,
         persist_directory=settings.chroma_dir,
     )

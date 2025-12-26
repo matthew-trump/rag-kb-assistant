@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
@@ -55,7 +55,7 @@ def main() -> None:
     )
 
     vs = Chroma(
-        collection_name="kb",
+        collection_name="kb_docs",
         embedding_function=embeddings,
         persist_directory=settings.chroma_dir,
     )
@@ -63,13 +63,11 @@ def main() -> None:
     # Reset and re-add using public API
     vs.delete_collection()
     vs = Chroma(
-        collection_name="kb",
+        collection_name="kb_docs",
         embedding_function=embeddings,
         persist_directory=settings.chroma_dir,
     )
     vs.add_documents(chunks)
-    vs.persist()
-
     print(f"Ingested {len(chunks)} chunks into Chroma at {settings.chroma_dir}")
 
 
